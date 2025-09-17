@@ -6,7 +6,7 @@ export HISTFILE="${HISTFILE:-$HOME/.history}"
 if [ -n "${BASH_VERSION-}" ]; then
   ### — Bash history setup — ###
   # Number of entries in memory/history-file
-  export HISTSIZE=5000
+  export HISTSIZE=10000
   export HISTFILESIZE=20000
 
   # Don’t record duplicates or commands starting with a space
@@ -32,7 +32,7 @@ if [ -n "${BASH_VERSION-}" ]; then
 elif [ -n "${ZSH_VERSION-}" ]; then
   ### — Zsh history setup — ###
   # Number of entries in memory & to save to file
-  HISTSIZE=5000
+  HISTSIZE=10000
   SAVEHIST=20000
 
   # Share history across sessions and append, don’t overwrite
@@ -45,9 +45,4 @@ elif [ -n "${ZSH_VERSION-}" ]; then
 
   # Record timestamp (epoch + human-readable) for each entry
   setopt EXTENDED_HISTORY
-
-  # Make fzf-style Ctrl-R if you have fzf-history-widget
-  if type fzf-history-widget &>/dev/null; then
-    bindkey '^R' fzf-history-widget
-  fi
 fi

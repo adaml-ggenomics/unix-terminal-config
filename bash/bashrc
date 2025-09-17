@@ -1,5 +1,8 @@
-# 1) Define DOTFILES
-DOTFILES="$HOME/.dotfiles"
+# ────────────────────────────────────────────────────────────────
+# 1) Figure out where this file lives (even if symlinked)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# 2) DOTFILES is the parent of that
+DOTFILES="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # 2) Source common utilities (aliases, functions, history, prompt)
 if [ -d "$DOTFILES/common" ]; then

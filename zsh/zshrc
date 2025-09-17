@@ -1,9 +1,13 @@
 # 1) Allow prompt substitution for parse_git_branch etc.
 setopt PROMPT_SUBST
 
-# 2) Define DOTFILES
-DOTFILES="$HOME/.dotfiles"
-
+# 2) Figure out where this file lives
+#    (%):-%x expands to the current script; :A makes it absolute; :h grabs the directory
+SCRIPT_PATH=${(%):-%x}
+SCRIPT_DIR=${SCRIPT_PATH:A:h}
+# 3) DOTFILES is its parent
+DOTFILES=${SCRIPT_DIR:A:h}
+export DOTFILES
 # 3) Source common utilities (aliases, functions, history, prompt)
 for f in "$DOTFILES/common/"*.sh; do
   # shellcheck disable=SC1090

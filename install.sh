@@ -8,6 +8,8 @@ while [ -L "$SOURCE" ]; do
   SOURCE="$(readlink "$SOURCE")"
   [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
 done
+
+# DOTFILES_DIR="$(pwd)"
 DOTFILES_DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
 
 # ─── 2) Backup existing RCs ─────────────────────────────────
@@ -21,9 +23,16 @@ for rc in .bashrc .zshrc; do
 done
 
 # ─── 3) Symlink in your versioned files ────────────────────
+# Replace symlink section with:
 echo "🔗 Symlinking dotfiles → ~/.[bash|zsh]rc"
-ln -v -sf "$DOTFILES_DIR/bash/bashrc" "$HOME/.bashrc"
-ln -v -sf "$DOTFILES_DIR/zsh/zshrc"  "$HOME/.zshrc"
+if ! ln -v -sf "$DOTFILES_DIR/bash/bashrc" "$HOME/.bashrc"; then
+    echo "⚠️  Failed to create .bashrc symlink"
+    exit 1
+fi
+if ! ln -v -sf "$DOTFILES_DIR/zsh/zshrc"  "$HOME/.zshrc"; then
+    echo "⚠️  Failed to create .zshrc symlink"
+    exit 1
+fi
 
 # ─── 4) Ensure Git, Zsh & Curl exist ───────────────────────
 echo "🛠 Installing prerequisites (git, zsh, curl)…"
@@ -35,13 +44,13 @@ else
   echo "⚠️  Could not detect package manager—please install git, zsh, curl yourself."
 fi
 
-# ─── 5) Install fzf from GitHub (so we get its install script) ──
-if [ ! -d "$HOME/.fzf" ]; then
-  echo "📦 Cloning fzf…"
-  git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf"
-fi
-echo "⚙️  Running fzf’s own installer"
-# note: --key-bindings, --completion, no shell-rc edits
-yes | "$HOME/.fzf/install" --key-bindings --completion --no-update-rc
+# Add after prerequisites installation:
+check_versions() {
+    echo "Checking installed versions:"
+    git --version
+    zsh --version
+    curl --version | head -n 1
+}
+check_versions
 
 echo "✅ Done! Restart your shell: exec \$SHELL or source ~/.bashrc / ~/.zshrc"
